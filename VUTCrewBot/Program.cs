@@ -2,7 +2,12 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using VUTCrewBot;
+using VUTCrewBot.Commands;
+using VUTCrewBot.DAL;
 using VUTCrewBot.Logging;
+using VUTCrewBot.Misc;
+using VUTCrewBot.Repository;
+using VUTCrewBot.Services;
 
 Console.WriteLine("Hello, World!");
 CreateHostBuilder(args).Build().Run();
@@ -26,29 +31,29 @@ static IHostBuilder CreateHostBuilder(string[] args)
         .ConfigureServices((hostContext, services) =>
         {
             BotConfiguration staticConfig = new BotConfiguration();
+            staticConfig.Token = "ODQ3NTYyMTc0MjQyMjI2MjE3.YK_3yQ.doc3AGwQNkJBK92gNeKArAoluqU";
+            staticConfig.DbConnectionString = "Data Source=CrewBot.db";
             services.AddHostedService<Worker>();
 
             services.AddSingleton<BotConfiguration>(provider =>
             {
                 return staticConfig;
             });
-
-            services.AddSingleton<MyLoggerFactory>(provider =>
+            services.AddSingleton<DiscordBotLibLoggerFactory>(provider =>
             {
-                return new MyLoggerFactory(provider.GetService<ILogger<Worker>>());
+                return new DiscordBotLibLoggerFactory(provider.GetService<ILogger<Worker>>());
             });
+            services.AddSingleton<BotSettings>();
             services.AddSingleton<CrewBot>();
             services.AddSingleton<IBotDbContextFactory, SQLiteDbContextFactory>();
+            services.AddTransient<BotRepository>();
+            services.AddSingleton<IRepositoryFactory, RepositoryFactory>();
 
             //Services
-            services.AddSingleton<RepostsTrackingService>();
-            services.AddSingleton<ResponderService>();
-            services.AddSingleton<PinService>();
-            services.AddSingleton<VideoCrashDetectorService>();
+            services.AddSingleton<MeetService>();
 
-            //Database providers
-            services.AddSingleton<ChannelProvider>();
-            services.AddSingleton<ImageHashProvider>();
-            services.AddSingleton<SettingsProvider>();
+            //Autocomplete choice providers
+            services.AddSingleton<ActiveMeetChoiceProvider>();
+            services.AddSingleton<MeetTemplatesChoiceProvider>();
         });
 }
