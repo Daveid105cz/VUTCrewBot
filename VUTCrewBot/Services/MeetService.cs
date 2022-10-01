@@ -313,7 +313,7 @@ namespace VUTCrewBot.Services
         }
         private async Task<DiscordMessageBuilder> BuildEmbedAsync(MeetModelDetail e, bool showButtons)
         {
-            String time = e.MeetupTime.ToString("t")+"\n"+e.MeetupTime.ToString("d");
+            String time = e.MeetupTime.ToString("HH:mm") +"\n"+e.MeetupTime.ToString("dd.MM.yyyy");
             DiscordEmbedBuilder builder = new DiscordEmbedBuilder()
                 .WithColor(DiscordColor.Gold)
                 .WithTitle("Nadcházející sraz")
@@ -384,6 +384,7 @@ namespace VUTCrewBot.Services
             public async Task Begin()
             {
                 source = new CancellationTokenSource();
+                
                 DateTime warnTime = Model.MeetupTime - TimeSpan.FromHours(1);
                 logger.LogInformation("Starting wait for meet warn at " + warnTime.ToString());
 

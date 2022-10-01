@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DSharpPlus;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace VUTCrewBot.Misc
     public class DiscordBotLibLoggerFactory : ILoggerFactory
     {
         private ILogger _logger;
-        public DiscordBotLibLoggerFactory(ILogger<Worker> logger)
+        public DiscordBotLibLoggerFactory(ILogger<DiscordClient> logger)
         {
             _logger = logger;
         }

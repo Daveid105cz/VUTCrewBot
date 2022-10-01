@@ -41,7 +41,8 @@ namespace VUTCrewBot
                 Token = configuration.Token,
                 TokenType = TokenType.Bot,
                 LoggerFactory = logFactory,
-                MinimumLogLevel = LogLevel.Debug
+                MinimumLogLevel = LogLevel.Trace,
+                
             });
             initCommands = new InitCommands(Logger, this, Settings);
             MeetTemplatesChoiceProvider.services = provider;
@@ -72,9 +73,18 @@ namespace VUTCrewBot
 
             await RegisterSlashCommands();
             Client.Ready += Client_Ready;
+            Client.ClientErrored += Client_ClientErrored;
+            
             await Client.ConnectAsync();
-
+            
         }
+
+        private async Task Client_ClientErrored(DiscordClient sender, DSharpPlus.EventArgs.ClientErrorEventArgs e)
+        {
+            Client.Logger.LogError(e.Exception.Message);
+            Client.Logger.LogError(e.Exception.StackTrace);
+        }
+
         public async Task RegisterSlashCommands()
         {
             var slashCommands = Client.UseSlashCommands(new SlashCommandsConfiguration()
@@ -82,8 +92,19 @@ namespace VUTCrewBot
                 Services = _provider,
                 
             });
-            slashCommands.RegisterCommands<MeetCommands>(700426862245183580u);
-            slashCommands.RegisterCommands<MeetTemplateCommands>(700426862245183580u);
+            slashCommands.SlashCommandErrored += SlashCommands_SlashCommandErrored;
+            ulong? guildId = null;
+#if DEBUG
+            guildId = 700426862245183580u;
+#endif
+            slashCommands.RegisterCommands<MeetCommands>(guildId);
+            slashCommands.RegisterCommands<MeetTemplateCommands>(guildId);
+        }
+
+        private async Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e)
+        {
+            Logger.LogError(e.Exception.Message);
+            Logger.LogError(e.Exception.StackTrace);
         }
 
         private async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e)

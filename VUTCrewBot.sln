@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.32804.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VUTCrewBot", "VUTCrewBot\VUTCrewBot.csproj", "{E587DF32-22BB-4C37-BD65-0DE04FB149D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VUTCrewBot", "VUTCrewBot\VUTCrewBot.csproj", "{E587DF32-22BB-4C37-BD65-0DE04FB149D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VUTCrewBot.DAL", "VUTCrewBot.DAL\VUTCrewBot.DAL.csproj", "{FCDA6827-C372-40A3-948C-7C9512ED922B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VUTCrewBot.DAL", "VUTCrewBot.DAL\VUTCrewBot.DAL.csproj", "{FCDA6827-C372-40A3-948C-7C9512ED922B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{01F341EB-F923-4D00-93DC-D2EF42E4AFB5}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

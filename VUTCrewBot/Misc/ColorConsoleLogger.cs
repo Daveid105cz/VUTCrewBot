@@ -141,7 +141,7 @@ namespace VUTCrewBot.Logging
     public class ColorConsoleLoggerConfiguration
     {
         public int EventId { get; set; }
-        public LogLevel LogLevel { get; set; } = LogLevel.Information;
+        public LogLevel LogLevel { get; set; } = LogLevel.Trace;
         public ConsoleColor Color { get; set; } = ConsoleColor.Green;
     }
 }

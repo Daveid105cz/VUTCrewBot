@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -85,11 +86,23 @@ namespace VUTCrewBot
         }
         public static bool ToFullDate(this String time, out DateTime value)
         {
-            if(DateTime.TryParse(time,out var tmp))
+            //var csCulture = CultureInfo.CreateSpecificCulture("cs-CZ");
+            try
             {
-                value = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, tmp.Minute,0);
+                var tmp = DateTime.ParseExact(time, "d.M.yyyy H:mm", null);
+                //var tmp = DateTime.Parse(time,, CultureInfo.InvariantCulture);
+                value = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, tmp.Minute, 0);
                 return true;
             }
+            catch (Exception e)
+            {
+
+            }
+            //if (DateTime.TryParseExact(time,"dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture,DateTimeStyles.None,out var tmp))
+            //{
+            //    value = new DateTime(tmp.Year, tmp.Month, tmp.Day, tmp.Hour, tmp.Minute, 0);
+            //    return true;
+            //}
             value = DateTime.MinValue;
             return false;
         }

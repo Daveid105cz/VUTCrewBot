@@ -13,5 +13,6 @@ namespace VUTCrewBot.DAL.Entities
         public bool DoRepeat { get; set; }
         public DayOfWeek RepeatDay { get; set; }
 
+        public List<MeetTemplateUserEntity> Users { get; set; }
     }
 }
