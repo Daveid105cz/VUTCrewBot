@@ -69,7 +69,7 @@ namespace VUTCrewBot
             initCommands.Init();
 
             RegisterService<MeetService>();
-
+            RegisterService<TemplateService>();
 
             await RegisterSlashCommands();
             Client.Ready += Client_Ready;
@@ -99,6 +99,7 @@ namespace VUTCrewBot
 #endif
             slashCommands.RegisterCommands<MeetCommands>(guildId);
             slashCommands.RegisterCommands<MeetTemplateCommands>(guildId);
+            
         }
 
         private async Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e)
@@ -134,7 +135,7 @@ namespace VUTCrewBot
             if (channelToPrintTo == null)
                 return;
 
-            var channel = await Client.GetChannelAsync(channelToPrintTo.Item2);
+            var channel = await Client.GetChannelAsync(channelToPrintTo.Value.Id);
             //bool isNew = informationalVersion != SettingsProvider.LastVersionCommitNumber;
             await channel.SendMessageAsync("Bot úspěšně spušťen.");
         }
@@ -143,7 +144,7 @@ namespace VUTCrewBot
             var channelToPrintTo = Settings.BotAdminNotifyMessagesChannel;
             if (channelToPrintTo == null)
                 return;
-            var channel = await Client.GetChannelAsync(channelToPrintTo.Item2);
+            var channel = await Client.GetChannelAsync(channelToPrintTo.Value.Id);
             await channel.SendMessageAsync("Bot se vypíná");
         }
     }

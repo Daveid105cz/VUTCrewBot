@@ -15,5 +15,7 @@ namespace VUTCrewBot.DAL.Entities
 
         [Key, Column(Order = 1)]
         public ulong UserId { get; set; }
+
+        public MeetTemplateEntity MeetTemplate { get; set; }
     }
 }

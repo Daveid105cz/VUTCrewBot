@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using VUTCrewBot.Commands;
 using VUTCrewBot.Misc;
 using VUTCrewBot.Repository;
 
@@ -40,7 +41,8 @@ namespace VUTCrewBot
     {
         public async static Task Think(this InteractionContext ctx)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.DeferAsync(true);
+            //await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource,);
         }
         public async static Task Respond(this InteractionContext ctx, String message)
         {
@@ -106,12 +108,12 @@ namespace VUTCrewBot
             value = DateTime.MinValue;
             return false;
         }
-        public async static Task<DiscordChannel?> GetChannelByIds(this DiscordClient client, Tuple<ulong,ulong>? ids)
+        /*public async static Task<DiscordChannel?> GetChannelByIds(this DiscordClient client, Tuple<ulong,ulong>? ids)
         {
             if (ids == null)
                 return null;
             return await client.GetChannelAsync(ids.Item2);
-        }
+        }*/
         /*public static void RegisterProvider<TInterface, TClass>(this IServiceCollection collection) 
             where TInterface : class, IProvider
             where TClass : class, TInterface
@@ -119,6 +121,52 @@ namespace VUTCrewBot
             collection.AddSingleton<IProviderFactory<TInterface>, GenericProviderFactory<TInterface>>();
             collection.AddTransient<TInterface, TClass>();
         }*/
-
+        public static DayOfWeek ToDayOfWeek(this AutoGenDayEnum enu)
+        {
+            switch (enu)
+            {
+                case AutoGenDayEnum.pondeli:
+                    return DayOfWeek.Monday;
+                case AutoGenDayEnum.utery:
+                    return DayOfWeek.Tuesday;
+                case AutoGenDayEnum.streda:
+                    return DayOfWeek.Wednesday;
+                case AutoGenDayEnum.ctvrtek:
+                    return DayOfWeek.Thursday;
+                case AutoGenDayEnum.patek:
+                    return DayOfWeek.Friday;
+                case AutoGenDayEnum.sobota:
+                    return DayOfWeek.Saturday;
+                case AutoGenDayEnum.nedela:
+                    return DayOfWeek.Sunday;
+                case AutoGenDayEnum.nikdy:
+                default:
+                    return DayOfWeek.Monday;
+            }
+        }
+        public static AutoGenDayEnum ToAutogenEnum(DayOfWeek day, bool doGen)
+        {
+            if (!doGen)
+                return AutoGenDayEnum.nikdy;
+            switch (day)
+            {
+                case DayOfWeek.Monday:
+                    return AutoGenDayEnum.pondeli;
+                case DayOfWeek.Tuesday:
+                    return AutoGenDayEnum.utery;
+                case DayOfWeek.Wednesday:
+                    return AutoGenDayEnum.streda;
+                case DayOfWeek.Thursday:
+                    return AutoGenDayEnum.ctvrtek;
+                case DayOfWeek.Friday:
+                    return AutoGenDayEnum.patek;
+                case DayOfWeek.Saturday:
+                    return AutoGenDayEnum.sobota;
+                case DayOfWeek.Sunday:
+                    return AutoGenDayEnum.nedela;
+                default:
+                    return AutoGenDayEnum.pondeli;
+            }
+        }
     }
 }

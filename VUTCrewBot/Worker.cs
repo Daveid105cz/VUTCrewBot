@@ -38,7 +38,9 @@ namespace VUTCrewBot
 
             var dbFactory = _provider.GetService<IBotDbContextFactory>();
             var context = dbFactory.CreateDbContext();
-            await context.Database.EnsureCreatedAsync();
+            //await context.Database.EnsureCreatedAsync();
+            await context.Database.MigrateAsync();
+
 
             if (String.IsNullOrEmpty(Config.Token))
             {

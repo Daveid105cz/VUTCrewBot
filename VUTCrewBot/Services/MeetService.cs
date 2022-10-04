@@ -29,7 +29,7 @@ namespace VUTCrewBot.Services
 
         private async Task<DiscordChannel> GetChannel()
         {
-            return await Client.GetChannelByIds(Settings.BotAdminNotifyMessagesChannel);
+            return await Client.GetChannelAsync(Settings.MeetsNotifyChannel.Value.Id);
         }
 
         public async override Task Init()
@@ -290,7 +290,7 @@ namespace VUTCrewBot.Services
         private async Task SendOrUpdateEmbed(ScheduledMeetObject scheduledMeetObject)
         {
 
-            DiscordChannel? toSendTo = await Client.GetChannelByIds(Settings.BotAdminNotifyMessagesChannel);
+            DiscordChannel? toSendTo = await GetChannel();
             if (toSendTo == null)
                 return;
 
@@ -302,7 +302,7 @@ namespace VUTCrewBot.Services
 
             if (scheduledMeetObject.InfoMessageId != 0)
             {
-                DiscordMessage message = await (await GetChannel()).GetMessageAsync(scheduledMeetObject.InfoMessageId);
+                DiscordMessage message = await toSendTo.GetMessageAsync(scheduledMeetObject.InfoMessageId);
                 await message.ModifyAsync(embed);
             }
             else

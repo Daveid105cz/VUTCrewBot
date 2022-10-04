@@ -10,7 +10,7 @@ using VUTCrewBot.Models;
 
 namespace VUTCrewBot.Repository
 {
-    public interface IMeetsRepository
+    public interface IMeetRepository
     {
         public Task<List<MeetModel>> GetAllMeets();
         public Task<MeetModelDetail> GetMeetById(int id);
@@ -21,9 +21,9 @@ namespace VUTCrewBot.Repository
         public Task<bool> DeleteMeetById(int id);
         public Task<List<MeetModel>> GetNearestMeets(TimeSpan? timeToMeetingMax = null);
     }
-    public class MeetsRepository : RepositoryBase, IMeetsRepository
+    public class MeetRepository : RepositoryBase, IMeetRepository
     {
-        public MeetsRepository(BotDbContext context) : base(context)
+        public MeetRepository(BotDbContext context) : base(context)
         {
 
         }

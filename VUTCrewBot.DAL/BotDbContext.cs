@@ -46,7 +46,18 @@ namespace VUTCrewBot.DAL
                 .Property(e => e.UserId)
                 .HasConversion(ulongConv)
                 .ValueGeneratedNever();
-     
+
+
+            modelBuilder.Entity<MeetTemplateUserEntity>()
+                .HasKey(p => new { p.MeetTemplateId, p.UserId });
+
+
+            modelBuilder
+                .Entity<MeetTemplateUserEntity>()
+                .Property(e => e.UserId)
+                .HasConversion(ulongConv)
+                .ValueGeneratedNever();
+
             //modelBuilder
             //    .Entity<ChannelEntity>()
             //    .Property(e => e.Id)

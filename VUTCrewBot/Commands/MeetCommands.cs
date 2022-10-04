@@ -14,6 +14,7 @@ using ZbytkyBot.Commands;
 using VUTCrewBot.Misc;
 using VUTCrewBot.Services;
 using VUTCrewBot.Exceptions;
+using System.ComponentModel;
 
 namespace VUTCrewBot.Commands
 {
@@ -43,9 +44,10 @@ namespace VUTCrewBot.Commands
                 await ctx.Respond("Sraz **NELZE** mít v minulosti");
                 return;
             }
+
             await MeetService.CreateMeetAsync(name, tim);
 
-            await ctx.Respond($"Sraz {name} přidán. v čas: {tim}");
+            await ctx.Respond($"Sraz {name} přidán. v čas: {tim:dd.MM.yyyy HH:mm}");
         }
 
 
@@ -161,26 +163,7 @@ namespace VUTCrewBot.Commands
 
     }
 
-    [SlashCommandGroup("template", "Organizace templatů")]
-    public class MeetTemplateCommands : ApplicationCommandModule
-    {
-        [SlashCommand("create", "Vytvoří nový sraz s názvem a časem")]
-        public async Task CreateMeetCommand(InteractionContext ctx,
-         [Option("name", "Název srazu")] String name,
-         [Option("time", "Čas ve formátu HH:MM (pls dodrž formát, když ne tak smolík)")] String time,
-         [Option("dayofweek", "Den v týdnu option")]DayOfWeekEnum dayOfWeek)
-        {
-            await ctx.Think();
-            if (!time.ToTimeOfDay(out var timeOfDay))
-            {
-                await ctx.Respond($"Nevalidní formát času.");
-                return;
-            }
 
-
-            await ctx.Respond($"TempCreate; Zvolena den {dayOfWeek}. čas: {timeOfDay}");
-        }
-    }
 
 
     public class ActiveMeetChoiceProvider : IAutocompleteProvider
@@ -201,38 +184,34 @@ namespace VUTCrewBot.Commands
             
         }
     }
-    public class MeetTemplatesChoiceProvider : IAutocompleteProvider
-    {
-        public static IServiceProvider services;
 
-        public async Task<IEnumerable<DiscordAutoCompleteChoice>> Provider(AutocompleteContext ctx)
-        {
-            IRepositoryFactory factory = services.GetService<IRepositoryFactory>();
-            await using var repo = factory.Create();
-
-            var meets = await repo.Meet.GetAllMeets();
-
-
-            return new List<DiscordAutoCompleteChoice>(
-                meets.Select(x => new DiscordAutoCompleteChoice(x.Name + " - " + x.MeetupTime, (long)x.Id))
-                );
-        }
-    }
-    public enum DayOfWeekEnum
+    public enum AutoGenDayEnum
     {
         [ChoiceName("Pondělí")]
+        [Description("Pondělí")]
         pondeli,
         [ChoiceName("Úterý")]
+        [Description("Úterý")]
         utery,
         [ChoiceName("Středa")]
+        [Description("Středa")]
         streda,
         [ChoiceName("Čtvrtek")]
+        [Description("Čtvrtek")]
         ctvrtek,
         [ChoiceName("Pátek")]
+        [Description("Pátek")]
         patek,
         [ChoiceName("Sobota")]
+        [Description("Sobota")]
         sobota,
         [ChoiceName("Neděle")]
-        nedela
+        [Description("Neděle")]
+        nedela,
+        [ChoiceName("Nikdy")]
+        [Description("Nikdy")]
+        nikdy,
+
+        
     }
 }

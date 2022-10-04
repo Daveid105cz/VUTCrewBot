@@ -10,8 +10,21 @@ using VUTCrewBot.Misc;
 using VUTCrewBot.Repository;
 using VUTCrewBot.Services;
 
+#if DEBUG
+Console.WriteLine("Running in debug mode");
+#else
+Console.WriteLine("Running in release mode");
+#endif
+
+AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
 CreateHostBuilder(args).Build().Run();
 
+
+void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+{
+    Console.WriteLine(e);
+}
 
 static IHostBuilder CreateHostBuilder(string[] args)
 {
@@ -29,9 +42,10 @@ static IHostBuilder CreateHostBuilder(string[] args)
         })
         .ConfigureServices((hostContext, services) =>
         {
-            
-            //staticConfig.Token = "ODQ3NTYyMTc0MjQyMjI2MjE3.YK_3yQ.doc3AGwQNkJBK92gNeKArAoluqU";
-            //staticConfig.DbConnectionString = "Data Source=CrewBot.db";
+#if DEBUG
+            staticConfig.Token = "ODQ3NTYyMTc0MjQyMjI2MjE3.YK_3yQ.doc3AGwQNkJBK92gNeKArAoluqU";
+            staticConfig.DbConnectionString = "Data Source=CrewBot.db";
+#endif
             services.AddHostedService<Worker>();
 
             services.AddSingleton<BotConfiguration>(provider =>
@@ -50,6 +64,7 @@ static IHostBuilder CreateHostBuilder(string[] args)
 
             //Services
             services.AddSingleton<MeetService>();
+            services.AddSingleton<TemplateService>();
 
             //Autocomplete choice providers
             services.AddSingleton<ActiveMeetChoiceProvider>();

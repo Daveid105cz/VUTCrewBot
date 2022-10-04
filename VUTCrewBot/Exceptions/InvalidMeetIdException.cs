@@ -20,4 +20,11 @@ namespace VUTCrewBot.Exceptions
 
         }
     }
+    public class InvalidTemplateIdException : ServiceException
+    {
+        public InvalidTemplateIdException() : base("Neplatný template")
+        {
+
+        }
+    }
 }

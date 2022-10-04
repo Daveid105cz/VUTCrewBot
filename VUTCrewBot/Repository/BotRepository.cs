@@ -18,8 +18,10 @@ namespace VUTCrewBot.Repository
             Context = dbFactory.CreateDbContext();
         }
 
-        public IMeetsRepository Meet => GetOrCreateRepository<MeetsRepository>();
+        public IMeetRepository Meet => GetOrCreateRepository<MeetRepository>();
+        public IMeetTemplateRepository Templates => GetOrCreateRepository<MeetTemplateRepository>();
         public ISettingsRepository Settings => GetOrCreateRepository<SettingsRepository>();
+
         //public UserRepository User => GetOrCreateRepository<UserRepository>();
 
         private TRepository GetOrCreateRepository<TRepository>() where TRepository : RepositoryBase

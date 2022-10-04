@@ -47,15 +47,27 @@ namespace VUTCrewBot.Commands
                     }
 
                 }
-                
+                else if(e.Message.Content == "?meethere")
+                {
+                    if (e.Author.Id == 401020216655740929u || e.Author.Id == 630039282886901811u)
+                    {
+                        Settings.MeetsNotifyChannel = new ChannelId(e.Message.Channel.Guild.Id, e.Message.Channel.Id);
+                        await e.Message.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":thumbsup:"));
+                    }
+                    else
+                    {
+                        await e.Message.RespondAsync("Not dávid");
+                    }
+                }
             }
         }
         private async void InitTheBot(DiscordMessage msg)
         {
             await msg.RespondAsync("Inting");
-            Settings.BotAdminNotifyMessagesChannel = new Tuple<ulong, ulong>(msg.Channel.Guild.Id ,msg.Channel.Id);
-            
-           // await Bot.RegisterSlashCommands();
+            Settings.BotAdminNotifyMessagesChannel = new ChannelId(msg.Channel.Guild.Id, msg.Channel.Id);
+            //new Tuple<ulong, ulong>(msg.Channel.Guild.Id ,msg.Channel.Id);
+
+            // await Bot.RegisterSlashCommands();
         }
         //[Command("notifyhere")]
         //[RequireOwner]
