@@ -9,41 +9,23 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VUTCrewBot.Repository;
-using VUTCrewBot.Misc;
 using DSharpPlus.SlashCommands;
 using VUTCrewBot.Commands;
 using VUTCrewBot.Services;
+using VUTCrewBot.BotToolkit;
 
 namespace VUTCrewBot
 {
-    public class CrewBot
+    public class CrewBot:DiscordBot<BotConfiguration>
     {
-        public DiscordClient Client { get; set; }
-        private BotConfiguration Configuration { get; set; }
-        private ILogger<Worker> Logger { get; set; }
         private BotSettings Settings { get; set; }
-
-
-        private readonly List<BotService> _botServices = new();
-
-        IServiceProvider _provider;
 
         InitCommands initCommands;
 
-        public CrewBot(BotConfiguration configuration, DiscordBotLibLoggerFactory logFactory, IServiceProvider provider, BotSettings settings)
+        public CrewBot(BotConfiguration configuration, ILoggerFactory loggerFactory, 
+            IServiceProvider provider, BotSettings settings):base(loggerFactory,provider, configuration)
         {
-            _provider = provider;
-            Configuration = configuration;
-            Logger = logFactory.CreateLogger<Worker>();
             Settings = settings;
-            Client = new DiscordClient(new DiscordConfiguration()
-            {
-                Token = configuration.Token,
-                TokenType = TokenType.Bot,
-                LoggerFactory = logFactory,
-                MinimumLogLevel = LogLevel.Trace,
-                
-            });
             initCommands = new InitCommands(Logger, this, Settings);
             MeetTemplatesChoiceProvider.services = provider;
             ActiveMeetChoiceProvider.services = provider;
@@ -54,80 +36,31 @@ namespace VUTCrewBot
         }
         public async Task Stop()
         {
-            //foreach (BotService bs in _botServices)
-            //{
-            //    await bs.Stop();
-            //}
-            await PrintBotDownMessage();
-            await Client.DisconnectAsync();
+            await Disconnect();
         }
         public async Task RunBot()
         {
-            //await SettingsProvider.LoadAsync();
             await Settings.LoadAsync();
 
             initCommands.Init();
 
+            //Services
             RegisterService<MeetService>();
             RegisterService<TemplateService>();
 
-            await RegisterSlashCommands();
-            Client.Ready += Client_Ready;
-            Client.ClientErrored += Client_ClientErrored;
-            
-            await Client.ConnectAsync();
-            
+            //Commands
+            RegisterCommand<MeetCommands>();
+            RegisterCommand<MeetTemplateCommands>();
+
+            //Scheduled jobs
+            RegisterJob<MeetRemindJob>("MeetReminding", "0 * * * *");
+
+            await Connect();
         }
-
-        private async Task Client_ClientErrored(DiscordClient sender, DSharpPlus.EventArgs.ClientErrorEventArgs e)
+        public override Task OnBotWentUp()
         {
-            Client.Logger.LogError(e.Exception.Message);
-            Client.Logger.LogError(e.Exception.StackTrace);
-        }
-
-        public async Task RegisterSlashCommands()
-        {
-            var slashCommands = Client.UseSlashCommands(new SlashCommandsConfiguration()
-            {
-                Services = _provider,
-                
-            });
-            slashCommands.SlashCommandErrored += SlashCommands_SlashCommandErrored;
-            ulong? guildId = null;
-#if DEBUG
-            guildId = 700426862245183580u;
-#endif
-            slashCommands.RegisterCommands<MeetCommands>(guildId);
-            slashCommands.RegisterCommands<MeetTemplateCommands>(guildId);
-            
-        }
-
-        private async Task SlashCommands_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e)
-        {
-            Logger.LogError(e.Exception.Message);
-            Logger.LogError(e.Exception.StackTrace);
-        }
-
-        private async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e)
-        {
-            Client.Logger.LogInformation("BOT ready");
-
-            foreach (BotService bs in _botServices)
-            {
-                await bs.Init(sender);
-            }
-
-            _ = Task.Run(async () =>
-            {
-                await PrintBotUpMessage();
-                //SettingsProvider.LastVersionCommitNumber = informationalVersion;
-                //await SettingsProvider.SaveAsync();
-            });
-        }
-        private void RegisterService<T>() where T : BotService
-        {
-            BotService bs = _provider.GetService<T>();
-            _botServices.Add(bs);
+            PrintBotUpMessage();
+            return base.OnBotWentUp();
         }
         private async Task PrintBotUpMessage()
         {

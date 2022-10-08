@@ -22,7 +22,7 @@ namespace VUTCrewBot.Services
 
         public async override Task Init()
         {
-            CronJob();
+            //CronJob();
         }
         private async Task CronJob()
         {
@@ -35,12 +35,41 @@ namespace VUTCrewBot.Services
             await Tasc.WaitUntil(nearestDayEnd);
             Logger.LogInformation("Running the CRON job");
             //RUN the job
+
+            GenerateMeetsFromTomorrowTemplates();
+
+
             Console.WriteLine("testing templatess");
             _ = Task.Factory.StartNew(() =>
             {
                 CronJob();
             });
 
+        }
+        private async Task GenerateMeetsFromTomorrowTemplates()
+        {
+            DateTime tomorrowDay = DateTime.Now.AddDays(1);
+            DayOfWeek dayOfTomorrow = tomorrowDay.DayOfWeek;
+            await using var Repo = RepositoryFactory.Create();
+
+            var templates = await Repo.Templates.GetGeneratedTemplatesOnDay(dayOfTomorrow);
+            foreach (var template in templates)
+            {
+                MeetModelDetail newModel = new MeetModelDetail()
+                {
+                    Name = template.Name,
+                    MeetupTime = new DateTime(tomorrowDay.Year, tomorrowDay.Month, tomorrowDay.Day,
+                        template.MeetupDayTime.Hours, template.MeetupDayTime.Minutes, 0),
+
+                };
+                foreach (var user in template.Users)
+                {
+                    newModel.Responses.Add(new UserMeetResponse() { UserId = user.UserId });
+                }
+                
+                await Repo.Meet.CreateMeet(newModel);
+            }
+            await Repo.CommitAsync();
         }
 
         public async Task CreateTemplateAsync(String name, TimeSpan timeOfDay)

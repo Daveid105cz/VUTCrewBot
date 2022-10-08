@@ -1,8 +1,11 @@
 ﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using VUTCrewBot;
+using VUTCrewBot.BotToolkit;
 using VUTCrewBot.Commands;
 using VUTCrewBot.DAL;
 using VUTCrewBot.Logging;
@@ -18,6 +21,12 @@ Console.WriteLine("Running in release mode");
 
 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+/*JobScheduler j = new JobScheduler();
+DateTimeOffset nn = DateTimeOffset.UtcNow;
+DateTimeOffset? dd =  j.GetNext("0 23 * * *");
+
+var pp = dd.Value - nn;*/
+
 CreateHostBuilder(args).Build().Run();
 
 
@@ -29,17 +38,33 @@ void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs
 static IHostBuilder CreateHostBuilder(string[] args)
 {
     BotConfiguration staticConfig = BotConfigurationLoader.LoadConfiguration();
+    staticConfig.LogLevel = LogLevel.Debug;
     return Host.CreateDefaultBuilder(args)
-        .ConfigureLogging((hostContext, builder) =>
+        .ConfigureLogging(loggin =>
         {
-            builder.ClearProviders()
-            .AddProvider(
-                new ColorConsoleLoggerProvider(
-                    new ColorConsoleLoggerConfiguration
-                    {
-                        LogLevel = staticConfig.LogLevel
-                    }));
+            loggin.ClearProviders();
+            loggin.SetMinimumLevel(staticConfig.LogLevel);
+            loggin.AddSimpleConsole(config =>
+            {
+                config.SingleLine = true;
+                config.ColorBehavior = LoggerColorBehavior.Enabled;
+                string timestampFormat = "yyyy-MM-dd HH:mm:ss ";
+                config.IncludeScopes = false;
+                
+                config.TimestampFormat = timestampFormat;
+                
+            });
         })
+        //.ConfigureLogging((hostContext, builder) =>
+        //{
+        //    builder.ClearProviders()
+        //    .AddProvider(
+        //        new ColorConsoleLoggerProvider(
+        //            new ColorConsoleLoggerConfiguration
+        //            {
+        //                LogLevel = staticConfig.LogLevel
+        //            }));
+        //})
         .ConfigureServices((hostContext, services) =>
         {
 #if DEBUG
@@ -61,13 +86,20 @@ static IHostBuilder CreateHostBuilder(string[] args)
             services.AddSingleton<IBotDbContextFactory, SQLiteDbContextFactory>();
             services.AddTransient<BotRepository>();
             services.AddSingleton<IRepositoryFactory, RepositoryFactory>();
+            services.AddSingleton<JobScheduler>();
 
             //Services
-            services.AddSingleton<MeetService>();
-            services.AddSingleton<TemplateService>();
+            services.RegisterAllServices(typeof(CrewBot).Assembly);
+            //services.AddSingleton<MeetService>();
+            //services.AddSingleton<TemplateService>();
 
             //Autocomplete choice providers
             services.AddSingleton<ActiveMeetChoiceProvider>();
             services.AddSingleton<MeetTemplatesChoiceProvider>();
+
+            //Jobs
+            services.RegisterAllJobs(typeof(CrewBot).Assembly);
+            //services.AddTransient<MeetRemindJob>();
+            //services.AddTransient<TemplateGenerationJob>();
         });
 }

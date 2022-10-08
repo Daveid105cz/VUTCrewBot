@@ -36,7 +36,7 @@ namespace VUTCrewBot.Services
         {
             RetrieveAndScheduleNearest();
             Client.ComponentInteractionCreated += Client_ComponentInteractionCreated;
-            CronJob();
+            //CronJob();
         }
         private async Task CronJob()
         {

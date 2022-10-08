@@ -32,10 +32,10 @@ namespace VUTCrewBot.Logging
             Exception exception,
             Func<TState, Exception, string> formatter)
         {
-            if(logLevel == LogLevel.Debug)
+            /*if(logLevel == LogLevel.Debug)
             {
                 Console.WriteLine("f----------------------------------------rthrhrth");
-            }
+            }*/
             if (!IsEnabled(logLevel))
             {
                 return;

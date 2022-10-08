@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using VUTCrewBot.BotToolkit;
 
 namespace VUTCrewBot
 {
-    public class BotConfiguration
+    public class BotConfiguration:BotConfigurationBase
     {
         public String DbConnectionString { get; set; } = string.Empty;
-        public String Token { get; set; } = string.Empty;
-        public LogLevel LogLevel { get; set; } = LogLevel.Information;
+        //public String Token { get; set; } = string.Empty;
+        //public LogLevel LogLevel { get; set; } = LogLevel.Information;
     }
     public static class BotConfigurationLoader
     {

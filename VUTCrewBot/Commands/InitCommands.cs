@@ -11,10 +11,10 @@ namespace VUTCrewBot.Commands
 {
     public class InitCommands
     {
-        public ILogger<Worker> Logger { private get; set; }
+        public ILogger Logger { private get; set; }
         public CrewBot Bot { private get; set; }
         public BotSettings Settings { get; set; }
-        public InitCommands(ILogger<Worker> logger, CrewBot bot, BotSettings settings) 
+        public InitCommands(ILogger logger, CrewBot bot, BotSettings settings) 
         {
             Settings = settings;
             Bot = bot;

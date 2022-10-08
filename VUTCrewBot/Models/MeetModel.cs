@@ -31,7 +31,9 @@ namespace VUTCrewBot.Models
         {
             hookCollection();
         }
-
+        public MeetModelDetail() : base(new MeetEntity())
+        {
+        }
         public ObservableCollection<UserMeetResponse> Responses { get; set; }
 
         private void hookCollection()
