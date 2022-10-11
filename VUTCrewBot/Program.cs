@@ -34,7 +34,7 @@ void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs
 static IHostBuilder CreateHostBuilder(string[] args)
 {
     BotConfiguration staticConfig = BotConfigurationLoader.LoadConfiguration();
-    staticConfig.LogLevel = LogLevel.Debug;
+    //staticConfig.LogLevel = LogLevel.Debug;
     return Host.CreateDefaultBuilder(args)
         .ConfigureLogging(loggin =>
         {

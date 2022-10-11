@@ -23,7 +23,7 @@ namespace VUTCrewBot.BotToolkit
     }
     public class JobCombo
     {
-        private static TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
+        private static TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Prague");
         public IMyJob Job { get; set; }
         public string Name { get; set; }
         public CronExpression Cron { get; set; }
