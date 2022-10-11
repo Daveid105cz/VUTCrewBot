@@ -15,6 +15,7 @@ using VUTCrewBot.Misc;
 using VUTCrewBot.Services;
 using VUTCrewBot.Exceptions;
 using System.ComponentModel;
+using Microsoft.Extensions.Logging;
 
 namespace VUTCrewBot.Commands
 {
@@ -23,9 +24,16 @@ namespace VUTCrewBot.Commands
     public class MeetCommands : MyBaseCommandModule
     {
         MeetService MeetService { get; set; }
-        public MeetCommands(IRepositoryFactory factory,MeetService service) : base(factory)
+        TemplateService TemplateService { get; set; }
+        public ILogger Logger { get; set; }
+        public MeetCommands(IRepositoryFactory factory,
+            MeetService service, 
+            TemplateService templateService, 
+            ILogger<MeetCommands> logger) : base(factory)
         {
             MeetService = service;
+            TemplateService = templateService;
+            Logger = logger;
         }
 
         [SlashCommand("create", "Vytvoří nový sraz s názvem a časem")]
@@ -34,12 +42,12 @@ namespace VUTCrewBot.Commands
         [Option("time", "Celý čas včetně data ve formátu DD.MM[.YYYY] HH:mm (pls dodrž formát, když ne tak smolík)")] String time)
         {
             await ctx.Think();
-            if(!time.ToFullDate(out var tim))
+            if (!time.ToDateTimeOrTodaySpan(out var tim))
             {
                 await ctx.Respond("Špatný formát data+času");
                 return;
             }
-            if(tim <= DateTime.Now)
+            if (tim <= DateTime.Now)
             {
                 await ctx.Respond("Sraz **NELZE** mít v minulosti");
                 return;
@@ -58,12 +66,11 @@ namespace VUTCrewBot.Commands
         [Option("name", "Nový název srazu (pokud nezadán tak zůstane stejný)")] String? name = null,
         [Option("time", "Celý čas včetně data ve formátu DD.MM.YYYY HH:mm (pls dodrž formát, když ne tak smolík)")] String time = "")
         {
-            //TODO: move repository logic to the service
             await ctx.Think();
             DateTime? toChange = null;
             if(!String.IsNullOrEmpty(time))
             {
-                if (!time.ToFullDate(out var tim))
+                if (!time.ToDateTimeOrTodaySpan(out var tim))
                 {
                     await ctx.Respond("Špatný formát data+času");
                     return;
@@ -156,9 +163,29 @@ namespace VUTCrewBot.Commands
         [Option("template", "Template srazu")] long templateId)
         {
             await ctx.Think();
+            try
+            {
+                var template = await TemplateService.GetTemplate((int)templateId);
+                DateTime dateTime = DateTime.Today;
+                dateTime = dateTime.Add(template.MeetupDayTime);
+                if(dateTime <= DateTime.Now)
+                {
+                    dateTime = dateTime.AddDays(1);
+                }
+                await MeetService.CreateMeetAsync(template.Name, 
+                    dateTime, 
+                    template.Users.Select(e => e.UserId).ToList()
+                    );
+                Logger.LogInformation($"Generated a meet {template.Name}:{dateTime:dd.MM.yyyy HH:mm} from template ID {template.Id}");
+                await ctx.Respond($"Template vygenerován do srazu.");
+                //await ctx.Respond($"Uživatel {user.Username} odstraněn ze srazu {meetName}.");
+            }
+            catch (ServiceException ex)
+            {
+                await ctx.Respond(ex.Message);
+            }
 
 
-            await ctx.Respond($"Template forknut {0}.");
         }
 
     }
@@ -175,11 +202,11 @@ namespace VUTCrewBot.Commands
             IRepositoryFactory factory = services.GetService<IRepositoryFactory>();
             await using var repo = factory.Create();
 
-            var meets = await repo.Meet.GetAllMeets();
+            var meets = await repo.Meet.GetAllUpcomingMeets();
 
 
             return new List<DiscordAutoCompleteChoice>(
-                meets.Select(x => new DiscordAutoCompleteChoice(x.Name + " - "+x.MeetupTime, (long)x.Id))
+                meets.Select(x => new DiscordAutoCompleteChoice($"{x.Name} - { x.MeetupTime:dd.MM.yyyy HH:mm}", (long)x.Id))
                 );
             
         }

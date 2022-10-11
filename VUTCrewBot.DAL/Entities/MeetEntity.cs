@@ -10,6 +10,7 @@ namespace VUTCrewBot.DAL.Entities
     {
         public String Name { get; set; }
         public DateTime MeetupTime { get; set; }
+        public String? Location { get; set; }
         public List<UserMeetResponse> UserResponses { get; set; }
     }
 }

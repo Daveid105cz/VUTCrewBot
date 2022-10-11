@@ -24,52 +24,14 @@ namespace VUTCrewBot.Services
         {
             //CronJob();
         }
-        private async Task CronJob()
-        {
-            //DateTime now = new DateTime(2022, 10, 3, 23, 0, 20);
-            DateTime now = DateTime.Now;
-            bool appendDay = now.Hour >= 23;
-            DateTime nearestDayEnd = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddHours(23);
-            nearestDayEnd = nearestDayEnd.AddDays(appendDay?1:0);
-            Logger.LogInformation("Scheduling template generation cronjob at " + nearestDayEnd.ToString());
-            await Tasc.WaitUntil(nearestDayEnd);
-            Logger.LogInformation("Running the CRON job");
-            //RUN the job
-
-            GenerateMeetsFromTomorrowTemplates();
-
-
-            Console.WriteLine("testing templatess");
-            _ = Task.Factory.StartNew(() =>
-            {
-                CronJob();
-            });
-
-        }
-        private async Task GenerateMeetsFromTomorrowTemplates()
+        public async Task<Tuple<DateTime,List<MeetTemplateModelDetail>>> GetTemplatesForTomorrow()
         {
             DateTime tomorrowDay = DateTime.Now.AddDays(1);
             DayOfWeek dayOfTomorrow = tomorrowDay.DayOfWeek;
             await using var Repo = RepositoryFactory.Create();
 
             var templates = await Repo.Templates.GetGeneratedTemplatesOnDay(dayOfTomorrow);
-            foreach (var template in templates)
-            {
-                MeetModelDetail newModel = new MeetModelDetail()
-                {
-                    Name = template.Name,
-                    MeetupTime = new DateTime(tomorrowDay.Year, tomorrowDay.Month, tomorrowDay.Day,
-                        template.MeetupDayTime.Hours, template.MeetupDayTime.Minutes, 0),
-
-                };
-                foreach (var user in template.Users)
-                {
-                    newModel.Responses.Add(new UserMeetResponse() { UserId = user.UserId });
-                }
-                
-                await Repo.Meet.CreateMeet(newModel);
-            }
-            await Repo.CommitAsync();
+            return new Tuple<DateTime, List<MeetTemplateModelDetail>>(tomorrowDay, templates);
         }
 
         public async Task CreateTemplateAsync(String name, TimeSpan timeOfDay)
@@ -105,6 +67,12 @@ namespace VUTCrewBot.Services
                 throw new InvalidTemplateIdException();
 
             await Repo.CommitAsync();
+        }
+        public async Task<MeetTemplateModelDetail> GetTemplate(int id)
+        {
+            await using var Repo = RepositoryFactory.Create();
+            MeetTemplateModelDetail model = await Repo.Templates.GetTemplateById(id);
+            return model;
         }
         public async Task<String> AddUserToTemplate(int id, ulong userId)
         {

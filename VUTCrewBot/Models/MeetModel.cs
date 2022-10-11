@@ -33,6 +33,7 @@ namespace VUTCrewBot.Models
         }
         public MeetModelDetail() : base(new MeetEntity())
         {
+            hookCollection();
         }
         public ObservableCollection<UserMeetResponse> Responses { get; set; }
 
@@ -42,14 +43,14 @@ namespace VUTCrewBot.Models
             {
                 Entity.UserResponses = new List<UserMeetResponse>();
             }
-            Responses = new ObservableCollection<UserMeetResponse>(Entity.UserResponses);
+            Responses = new ObservableCollection<UserMeetResponse>(Entity.UserResponses.OrderBy(e=>e.UserId));
             Responses.CollectionChanged += Responses_CollectionChanged;
         }
 
         private void Responses_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Entity.UserResponses.Clear();
-            Entity.UserResponses.AddRange(Responses);
+            Entity.UserResponses.AddRange(Responses.OrderBy(e=>e.UserId));
         }
 
         public bool HasUser(ulong id)

@@ -24,10 +24,10 @@ namespace VUTCrewBot.Services
             Logger = serviceProvider.GetService<ILogger<Worker>>();
             RepositoryFactory = repositoryFactory;
             Settings = serviceProvider.GetService<BotSettings>();
+            Client = serviceProvider.GetService<DiscordClient>();
         }
-        public Task Init(DiscordClient client)
+        public Task InitInternal()
         {
-            Client = client;
             return Init();
         }
         public virtual Task Init()

@@ -50,12 +50,22 @@ namespace VUTCrewBot.BotToolkit
 
                 DateTimeOffset now = DateTimeOffset.UtcNow;
                 var time = next.Value - now;
-                Logger.LogDebug($"Scheduling job {this} for {next} (in {time:hh':'mm':'ss} )");
+                Logger.LogDebug($"Scheduling job {this} for {next:dd.MM.yyyy HH:mm} (in {time:hh':'mm':'ss} )");
+
                 await Task.Delay(time, CancelSource.Token);
+
                 if (CancelSource.IsCancellationRequested)
                     return;
                 Logger.LogDebug($"Running job {this}");
-                Job.RunAsync();
+
+                try
+                {
+                    Job.RunAsync();
+                }
+                catch(Exception ex)
+                {
+                    Logger.LogError(ex, $"Exception occured during a scheduled job run of {this}");
+                }
             }
         }
         public void Cancel()

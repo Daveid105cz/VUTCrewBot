@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -21,11 +22,6 @@ Console.WriteLine("Running in release mode");
 
 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-/*JobScheduler j = new JobScheduler();
-DateTimeOffset nn = DateTimeOffset.UtcNow;
-DateTimeOffset? dd =  j.GetNext("0 23 * * *");
-
-var pp = dd.Value - nn;*/
 
 CreateHostBuilder(args).Build().Run();
 
@@ -89,6 +85,7 @@ static IHostBuilder CreateHostBuilder(string[] args)
             services.AddSingleton<JobScheduler>();
 
             //Services
+            services.AddSingleton<MeetNotifier>();
             services.RegisterAllServices(typeof(CrewBot).Assembly);
             //services.AddSingleton<MeetService>();
             //services.AddSingleton<TemplateService>();
@@ -101,5 +98,18 @@ static IHostBuilder CreateHostBuilder(string[] args)
             services.RegisterAllJobs(typeof(CrewBot).Assembly);
             //services.AddTransient<MeetRemindJob>();
             //services.AddTransient<TemplateGenerationJob>();
+
+            services.AddSingleton<DiscordConfiguration>((services) =>
+            {
+                return new DiscordConfiguration()
+                {
+                    Token = staticConfig.Token,
+                    TokenType = TokenType.Bot,
+                    LoggerFactory = services.GetService<ILoggerFactory>(),
+                    MinimumLogLevel = staticConfig.LogLevel
+
+                };
+            });
+            services.AddSingleton<DiscordClient>();
         });
 }

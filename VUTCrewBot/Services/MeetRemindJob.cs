@@ -7,11 +7,16 @@ using VUTCrewBot.BotToolkit;
 
 namespace VUTCrewBot.Services
 {
-    internal class MeetRemindJob : IMyJob
+    public class MeetRemindJob : IMyJob
     {
+        MeetNotifier Notifier { get; set; }
+        public MeetRemindJob(MeetNotifier notifier)
+        {
+            Notifier = notifier;
+        }
         public async Task RunAsync()
         {
-            
+            await Notifier.RetrieveAndScheduleNearest();
         }
     }
 }

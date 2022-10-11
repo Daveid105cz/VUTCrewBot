@@ -1,0 +1,10 @@
+ik — dnes v 16:28
+Q:
+(b+(b(c+bb)ba+a+b(c+bb)a)(b(c+bb)ba+b(c+bb)a)b)(c+bb)b + Eps
+
+
+R
+(b(c+bb)ba+a+b(c+bb)a)(b(c+bb)ba+b(c+bb)a)*
+
+S:
+(b+(b(c+bb)ba+a+b(c+bb)a)(b(c+bb)ba+b(c+bb)a)b)(c+bb)

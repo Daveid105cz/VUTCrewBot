@@ -25,7 +25,8 @@ namespace VUTCrewBot
                 return Task.CompletedTask;
             }
             TimeSpan until = date - DateTime.Now;
-            return Task.Delay(until,cancellationToken);
+
+            return Task.Delay(until,cancellationToken).ContinueWith(tsk => tsk.Exception == default); ;
         }
         public static Task WaitUntil(DateTime date)
         {
@@ -107,6 +108,21 @@ namespace VUTCrewBot
             //}
             value = DateTime.MinValue;
             return false;
+        }
+        public static bool ToDateTimeOrTodaySpan(this String time, out DateTime value) 
+        {
+            DateTime tim = DateTime.MinValue;
+            if (!time.ToFullDate(out tim))
+            {
+                if (!time.ToTimeOfDay(out var span))
+                {
+                    value = DateTime.MinValue;
+                    return false;
+                }
+                tim = DateTime.Today.Add(span);
+            }
+            value = tim;
+            return true;
         }
         /*public async static Task<DiscordChannel?> GetChannelByIds(this DiscordClient client, Tuple<ulong,ulong>? ids)
         {

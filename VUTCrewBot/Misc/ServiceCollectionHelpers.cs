@@ -14,7 +14,12 @@ namespace VUTCrewBot.Misc
     {
         public static void RegisterAllJobs(this IServiceCollection services, Assembly assembly)
         {
-            var types = assembly.ExportedTypes.Where(c => c.IsClass && c.IsSubclassOf(typeof(IMyJob)));
+            var types = assembly.ExportedTypes.Where((c) => 
+            {
+                bool pp = c.IsClass && c.GetInterfaces().Contains(typeof(IMyJob));
+                return pp;
+            }).ToList();
+
 
             foreach (var type in types)
             {

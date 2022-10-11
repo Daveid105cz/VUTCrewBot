@@ -13,32 +13,24 @@ using VUTCrewBot.Services;
 
 namespace VUTCrewBot.BotToolkit
 {
-    public class DiscordBot<TConf> where TConf:BotConfigurationBase
-    {
+    public class DiscordBot 
+    { 
         protected IServiceProvider ServiceProvider { get; set; }
         public DiscordClient Client { get; set; }
-        protected ILogger<DiscordBot<TConf>> Logger { get; set; }
+        protected ILogger<DiscordBot> Logger { get; set; }
         protected JobScheduler Jobs { get; set; }
-        protected BotConfigurationBase Configuration { get; set; }
         protected List<BotService> BotServices { get; set; } = new();
         protected SlashCommandsExtension SlashCommands { get; set; }
 
-        public DiscordBot(ILoggerFactory loggerFactory, 
-            IServiceProvider provider,
-            TConf configuration)
+        public DiscordBot(DiscordClient discordClient, ILoggerFactory loggerFactory,
+            IServiceProvider provider)
         {
             ServiceProvider = provider;
-            Configuration = configuration;
-            Logger = loggerFactory.CreateLogger<DiscordBot<TConf>>();
+            Logger = loggerFactory.CreateLogger<DiscordBot>();
             Jobs = new JobScheduler(ServiceProvider);
-            Client = new DiscordClient(new DiscordConfiguration()
-            {
-                Token = configuration.Token,
-                TokenType = TokenType.Bot,
-                LoggerFactory = loggerFactory,
-                MinimumLogLevel = configuration.LogLevel
+            Client = discordClient;
 
-            });
+
             Client.Ready += Client_Ready;
             Client.ClientErrored += Client_ClientErrored;
 
@@ -75,9 +67,9 @@ namespace VUTCrewBot.BotToolkit
 #endif
             SlashCommands.RegisterCommands<T>(guildId);
         }
-        public void RegisterJob<T>(String name, String cron)
+        public void RegisterJob<T>(String name, String cron) where T : IMyJob
         {
-
+            Jobs.RegisterJob<T>(name, cron);
         }
         
         protected async Task Connect()
@@ -101,7 +93,7 @@ namespace VUTCrewBot.BotToolkit
                 firstReady = false;
                 foreach (BotService bs in BotServices)
                 {
-                    await bs.Init(sender);
+                    await bs.InitInternal();
                 }
                 Jobs.Work();
 

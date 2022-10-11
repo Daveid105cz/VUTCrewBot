@@ -9,6 +9,7 @@ namespace VUTCrewBot.DAL.Entities
     public class MeetTemplateEntity:BasicEntity
     {
         public String Name { get; set; }
+        public String? Location { get; set; }
         public TimeSpan MeetupDayTime { get; set; }
         public bool DoGenerate { get; set; }
         public DayOfWeek RepeatDay { get; set; }

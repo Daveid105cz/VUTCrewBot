@@ -16,14 +16,14 @@ using VUTCrewBot.BotToolkit;
 
 namespace VUTCrewBot
 {
-    public class CrewBot:DiscordBot<BotConfiguration>
+    public class CrewBot:DiscordBot
     {
         private BotSettings Settings { get; set; }
 
         InitCommands initCommands;
 
-        public CrewBot(BotConfiguration configuration, ILoggerFactory loggerFactory, 
-            IServiceProvider provider, BotSettings settings):base(loggerFactory,provider, configuration)
+        public CrewBot(DiscordClient discordClient, ILoggerFactory loggerFactory, 
+            IServiceProvider provider, BotSettings settings):base(discordClient, loggerFactory,provider)
         {
             Settings = settings;
             initCommands = new InitCommands(Logger, this, Settings);
@@ -47,6 +47,7 @@ namespace VUTCrewBot
             //Services
             RegisterService<MeetService>();
             RegisterService<TemplateService>();
+            RegisterService<MeetNotifier>();
 
             //Commands
             RegisterCommand<MeetCommands>();
@@ -54,6 +55,7 @@ namespace VUTCrewBot
 
             //Scheduled jobs
             RegisterJob<MeetRemindJob>("MeetReminding", "0 * * * *");
+            RegisterJob<TemplateGenerationJob>("TemplateGenerator", "0 23 * * *");
 
             await Connect();
         }
