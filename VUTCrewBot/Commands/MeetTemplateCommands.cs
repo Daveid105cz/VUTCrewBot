@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace VUTCrewBot.Commands
     public class MeetTemplateCommands : MyBaseCommandModule
     {
         TemplateService TemplateService { get; set; }
-        public MeetTemplateCommands(IRepositoryFactory factory, TemplateService service) : base(factory)
+        public MeetTemplateCommands(TemplateService service, ILogger<MeetTemplateCommands> logger) : base(logger)
         {
             TemplateService = service;
         }

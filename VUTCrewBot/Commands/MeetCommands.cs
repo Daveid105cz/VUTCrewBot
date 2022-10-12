@@ -25,15 +25,13 @@ namespace VUTCrewBot.Commands
     {
         MeetService MeetService { get; set; }
         TemplateService TemplateService { get; set; }
-        public ILogger Logger { get; set; }
-        public MeetCommands(IRepositoryFactory factory,
-            MeetService service, 
+ 
+        public MeetCommands(MeetService service, 
             TemplateService templateService, 
-            ILogger<MeetCommands> logger) : base(factory)
+            ILogger<MeetCommands> logger) : base(logger)
         {
             MeetService = service;
             TemplateService = templateService;
-            Logger = logger;
         }
 
         [SlashCommand("create", "Vytvoří nový sraz s názvem a časem")]
