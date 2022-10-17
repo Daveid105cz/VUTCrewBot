@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿global using BotToolkit;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,13 +7,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using VUTCrewBot;
-using VUTCrewBot.BotToolkit;
 using VUTCrewBot.Commands;
 using VUTCrewBot.DAL;
-using VUTCrewBot.Logging;
 using VUTCrewBot.Misc;
 using VUTCrewBot.Repository;
 using VUTCrewBot.Services;
+
 
 #if DEBUG
 Console.WriteLine("Running in debug mode");
@@ -73,16 +73,17 @@ static IHostBuilder CreateHostBuilder(string[] args)
             {
                 return staticConfig;
             });
-            services.AddSingleton<DiscordBotLibLoggerFactory>(provider =>
+            /*services.AddSingleton<DiscordBotLibLoggerFactory>(provider =>
             {
                 return new DiscordBotLibLoggerFactory(provider.GetService<ILogger<DiscordClient>>());
-            });
+            });*/
             services.AddSingleton<BotSettings>();
             services.AddSingleton<CrewBot>();
             services.AddSingleton<IBotDbContextFactory, SQLiteDbContextFactory>();
             services.AddTransient<BotRepository>();
             services.AddSingleton<IRepositoryFactory, RepositoryFactory>();
             services.AddSingleton<JobScheduler>();
+            services.AddSingleton<ServiceContext>();
 
             //Services
             services.AddSingleton<MeetNotifier>();

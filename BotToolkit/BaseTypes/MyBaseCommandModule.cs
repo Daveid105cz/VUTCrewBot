@@ -8,14 +8,9 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VUTCrewBot;
-using VUTCrewBot.Misc;
-using VUTCrewBot.Repository;
 
-namespace ZbytkyBot.Commands
+namespace BotToolkit.BaseTypes
 {
-
-    //[MyModuleLifespan]
     public abstract class MyBaseCommandModule : ApplicationCommandModule
     {
         public ILogger Logger { get; set; }

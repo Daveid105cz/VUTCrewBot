@@ -1,4 +1,5 @@
-﻿using Cronos;
+﻿using BotToolkit.BaseTypes;
+using Cronos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,19 +10,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VUTCrewBot.BotToolkit
+namespace BotToolkit
 {
-    public enum JobRunType
-    {
-        Periodic,
-        AtTime
-    }
 
-    public interface IMyJob
-    {
-        public Task RunAsync();
-    }
-    public class JobCombo
+    public class ScheduledJob
     {
         private static TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Prague");
         public IMyJob Job { get; set; }
@@ -29,7 +21,7 @@ namespace VUTCrewBot.BotToolkit
         public CronExpression Cron { get; set; }
         CancellationTokenSource CancelSource { get; set; }
         private ILogger Logger { get; set; }
-        public JobCombo(IMyJob job, string name, CronExpression expr, ILogger logger)
+        public ScheduledJob(IMyJob job, string name, CronExpression expr, ILogger logger)
         {
             Name = name;
             Job = job;
@@ -85,7 +77,7 @@ namespace VUTCrewBot.BotToolkit
             _provider = provider;
         }
 
-        List<JobCombo> jobs = new List<JobCombo>();
+        List<ScheduledJob> jobs = new List<ScheduledJob>();
 
         public void RegisterJob<T>(string name, string cronSetting) where T : IMyJob
         {
@@ -97,7 +89,7 @@ namespace VUTCrewBot.BotToolkit
 
             //job.Cron = cronSetting;
             var logger = _provider.GetService<ILogger<T>>();
-            jobs.Add(new JobCombo(job, name, CronExpression.Parse(cronSetting), logger));
+            jobs.Add(new ScheduledJob(job, name, CronExpression.Parse(cronSetting), logger));
         }
         public void Work()
         {

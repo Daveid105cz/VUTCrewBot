@@ -28,7 +28,7 @@ namespace VUTCrewBot.Services
         public event MeetDeletedEventHandler MeetDeleted;
         public event MeetCreatedEventHandler MeetCreated;
 
-        public MeetService(IServiceProvider serviceProvider, IRepositoryFactory repoFactory) : base(serviceProvider, repoFactory)
+        public MeetService(ILogger<MeetService> logger,  ServiceContext ctx) : base(logger, ctx)
         {
 
         }

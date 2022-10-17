@@ -15,7 +15,7 @@ namespace VUTCrewBot.Services
 {
     public class TemplateService : BotService
     {
-        public TemplateService(IServiceProvider serviceProvider, IRepositoryFactory repoFactory) : base(serviceProvider, repoFactory)
+        public TemplateService(ILogger<TemplateService> logger,  ServiceContext ctx) : base(logger, ctx)
         {
 
         }

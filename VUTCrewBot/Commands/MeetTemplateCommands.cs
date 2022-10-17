@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using BotToolkit.BaseTypes;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VUTCrewBot.Exceptions;
 using VUTCrewBot.Services;
-using ZbytkyBot.Commands;
 
 namespace VUTCrewBot.Commands
 {

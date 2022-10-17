@@ -4,8 +4,10 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine3.16-arm64v8 AS build
 WORKDIR /source
 COPY "./VUTCrewBot/VUTCrewBot.csproj" "./VUTCrewBot/VUTCrewBot.csproj"
 COPY "./VUTCrewBot.DAL/VUTCrewBot.DAL.csproj" "./VUTCrewBot.DAL/VUTCrewBot.DAL.csproj"
+COPY "./BotToolkit/BotToolkit.csproj" "./BotToolkit/BotToolkit.csproj"
 RUN dotnet restore "./VUTCrewBot/VUTCrewBot.csproj" --disable-parallel
 RUN dotnet restore "./VUTCrewBot.DAL/VUTCrewBot.DAL.csproj" --disable-parallel
+RUN dotnet restore "./BotToolkit/BotToolkit.csproj" --disable-parallel
 
 COPY . .
 RUN dotnet publish "./VUTCrewBot/VUTCrewBot.csproj" -c release -o /app --no-restore

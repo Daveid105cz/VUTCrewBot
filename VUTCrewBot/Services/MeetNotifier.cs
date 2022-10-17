@@ -32,9 +32,8 @@ namespace VUTCrewBot.Services
         public object dictLocker = new object();
 
 
-        public MeetNotifier(MeetService service, 
-            IServiceProvider services, 
-            IRepositoryFactory repoFactory):base(services, repoFactory)
+        public MeetNotifier(ILogger<MeetNotifier> logger,  MeetService service, 
+            ServiceContext ctx):base(logger, ctx)
         {
             MeetService = service;
             MeetService.MeetCreated += MeetService_MeetCreated;
@@ -245,7 +244,7 @@ namespace VUTCrewBot.Services
 
     internal class ScheduledMeetObject
     {
-        ILogger<Worker> logger;
+        ILogger logger;
 
         public event Action<ScheduledMeetObject> DisplayIncomingEvent;
         public event Action<ScheduledMeetObject> MeetEndedEvent;
@@ -255,7 +254,7 @@ namespace VUTCrewBot.Services
         public bool IsFinished { get; private set; }
         public ulong InfoMessageId { get; set; } = 0;
 
-        public ScheduledMeetObject(int meetId, DateTime meetTime, ILogger<Worker> logger)
+        public ScheduledMeetObject(int meetId, DateTime meetTime, ILogger logger)
         {
             MeetId = meetId;
             MeetupTime = meetTime;

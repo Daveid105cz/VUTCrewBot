@@ -17,15 +17,13 @@ namespace VUTCrewBot.Commands
         public ILogger Logger { private get; set; }
         public CrewBot Bot { private get; set; }
         public BotSettings Settings { get; set; }
-        public BotConfiguration Configuration { get; set; }
-        private IServiceProvider serviceProvider;
-        public InitCommands(ILogger logger, CrewBot bot, BotSettings settings, BotConfiguration cofig, IServiceProvider provider) 
+        IServiceProvider ServiceProvider { get; set; }
+        public InitCommands(ILogger logger, CrewBot bot, BotSettings settings, IServiceProvider serviceProvider) 
         {
             Settings = settings;
             Bot = bot;
             Logger = logger;
-            Configuration = cofig;
-            serviceProvider = provider;
+            ServiceProvider = serviceProvider;
         }
         public void Init()
         {
@@ -71,7 +69,7 @@ namespace VUTCrewBot.Commands
                     if (e.Author.Id == 401020216655740929u || e.Author.Id == 630039282886901811u)
                     {
                         //String dbpath = Configuration.DbConnectionString.Split("=")[1];
-                        IBotDbContextFactory fact = serviceProvider.GetService<IBotDbContextFactory>();
+                        IBotDbContextFactory fact = ServiceProvider.GetService<IBotDbContextFactory>();
                         var dbcx = await fact.CreateDbContextAsync();
                         try
                         {

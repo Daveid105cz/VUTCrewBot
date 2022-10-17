@@ -12,7 +12,6 @@ using VUTCrewBot.Repository;
 using DSharpPlus.SlashCommands;
 using VUTCrewBot.Commands;
 using VUTCrewBot.Services;
-using VUTCrewBot.BotToolkit;
 
 namespace VUTCrewBot
 {
@@ -26,7 +25,7 @@ namespace VUTCrewBot
             IServiceProvider provider, BotSettings settings, BotConfiguration config):base(discordClient, loggerFactory,provider)
         {
             Settings = settings;
-            initCommands = new InitCommands(Logger, this, Settings, config, provider);
+            initCommands = new InitCommands(Logger, this, Settings, provider);
             MeetTemplatesChoiceProvider.services = provider;
             ActiveMeetChoiceProvider.services = provider;
         }

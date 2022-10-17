@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using BotToolkit.BaseTypes;
+using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,18 +9,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VUTCrewBot.Commands;
-using VUTCrewBot.Services;
 
-namespace VUTCrewBot.BotToolkit
+namespace BotToolkit
 {
     public class DiscordBot 
-    { 
+    {
+         
         protected IServiceProvider ServiceProvider { get; set; }
         public DiscordClient Client { get; set; }
         protected ILogger<DiscordBot> Logger { get; set; }
         protected JobScheduler Jobs { get; set; }
-        protected List<BotService> BotServices { get; set; } = new();
+        protected List<BotServiceBase> BotServices { get; set; } = new();
         protected SlashCommandsExtension SlashCommands { get; set; }
 
         public DiscordBot(DiscordClient discordClient, ILoggerFactory loggerFactory,
@@ -52,7 +52,7 @@ namespace VUTCrewBot.BotToolkit
 
         }
 
-        public void RegisterService<T>() where T : BotService
+        public void RegisterService<T>() where T : BotServiceBase
         {
             var bs = ServiceProvider.GetService<T>();
             if (bs == null)
@@ -91,7 +91,7 @@ namespace VUTCrewBot.BotToolkit
             if(firstReady)
             {
                 firstReady = false;
-                foreach (BotService bs in BotServices)
+                foreach (BotServiceBase bs in BotServices)
                 {
                     await bs.InitInternal();
                 }

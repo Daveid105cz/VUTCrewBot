@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BotToolkit.BaseTypes;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VUTCrewBot.BotToolkit;
 using VUTCrewBot.DAL.Entities;
 using VUTCrewBot.Models;
 

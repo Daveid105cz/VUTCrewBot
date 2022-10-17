@@ -10,12 +10,12 @@ using VUTCrewBot.Repository;
 using VUTCrewBot.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Xml.Linq;
-using ZbytkyBot.Commands;
 using VUTCrewBot.Misc;
 using VUTCrewBot.Services;
 using VUTCrewBot.Exceptions;
 using System.ComponentModel;
 using Microsoft.Extensions.Logging;
+using BotToolkit.BaseTypes;
 
 namespace VUTCrewBot.Commands
 {

@@ -8,41 +8,12 @@ using VUTCrewBot.Repository;
 
 namespace VUTCrewBot
 {
-    public struct ChannelId
-    {
-        public ChannelId(ulong guild, ulong id)
-        {
-            this.GuildId = guild;
-            this.Id = id;
-        }
-        public ulong GuildId { get; set; }
-        public ulong Id { get; set; }
-
-        public override string ToString()
-        {
-            return String.Format("{0};{1}", GuildId, Id);
-        }
-        public static ChannelId? FromString(String value)
-        {
-            if (String.IsNullOrWhiteSpace(value))
-                return null;
-
-            String[] split = value.Split(";");
-            if (split.Length != 2)
-                return null;
-            ulong srvId, channelId = 0;
-            if (ulong.TryParse(split[0], out srvId) && ulong.TryParse(split[1], out channelId))
-                return new ChannelId(srvId, channelId);
-            else
-                return null;
-        }
-    }
-
+    
     public class BotSettings
     {
 
-        private static readonly String KEY_ADMINNOTIFY_CHANNEL = "AdminNotifyMessagesChannel";
-        private static readonly String KEY_MEETNOTIFY_CHANNEL = "MeetsNotifyMessagesChannel";
+        private static readonly string KEY_ADMINNOTIFY_CHANNEL = "AdminNotifyMessagesChannel";
+        private static readonly string KEY_MEETNOTIFY_CHANNEL = "MeetsNotifyMessagesChannel";
 
         IRepositoryFactory factory;
         public BotSettings(IRepositoryFactory repositoryFactory)
@@ -66,14 +37,14 @@ namespace VUTCrewBot
         {
             await using var repo = factory.Create();
 
-            _botAdminNotifyMessagesChannel = ChannelId.FromString(await GetValue(repo, KEY_ADMINNOTIFY_CHANNEL, String.Empty));
-            _meetsNotifyChannel = ChannelId.FromString(await GetValue(repo, KEY_MEETNOTIFY_CHANNEL, String.Empty));
+            _botAdminNotifyMessagesChannel = ChannelId.FromString(await GetValue(repo, KEY_ADMINNOTIFY_CHANNEL, string.Empty));
+            _meetsNotifyChannel = ChannelId.FromString(await GetValue(repo, KEY_MEETNOTIFY_CHANNEL, string.Empty));
         }
-        private Task<String> GetValue(BotRepository repo, String key, String defaultValue)
+        private Task<string> GetValue(BotRepository repo, string key, string defaultValue)
         {
-            return repo.Settings.GetValueOrDefault(key, String.Empty);
+            return repo.Settings.GetValueOrDefault(key, string.Empty);
         }
-        private void SetChannel(ChannelId? channel, String key)
+        private void SetChannel(ChannelId? channel, string key)
         {
             if (channel != null)
             {
@@ -84,26 +55,26 @@ namespace VUTCrewBot
                 Set(key, "");
             }
         }
-       /* private async Task<Tuple<ulong, ulong>?> LoadAdminNotifyChannel(BotRepository repo)
-        {
-            String value = await repo.Settings.GetValueOrDefault("AdminNotifyMessagesChannel", String.Empty);
-            if (String.IsNullOrWhiteSpace(value))
-                return null;
+        /* private async Task<Tuple<ulong, ulong>?> LoadAdminNotifyChannel(BotRepository repo)
+         {
+             String value = await repo.Settings.GetValueOrDefault("AdminNotifyMessagesChannel", String.Empty);
+             if (String.IsNullOrWhiteSpace(value))
+                 return null;
 
-            String[] split = value.Split(";");
-            if (split.Length != 2)
-                return null;
-            ulong srvId, channelId = 0;
-            if (ulong.TryParse(split[0], out srvId) && ulong.TryParse(split[1], out channelId))
-                return new Tuple<ulong, ulong>(srvId, channelId);
-            else
-                return null;
-        }*/
+             String[] split = value.Split(";");
+             if (split.Length != 2)
+                 return null;
+             ulong srvId, channelId = 0;
+             if (ulong.TryParse(split[0], out srvId) && ulong.TryParse(split[1], out channelId))
+                 return new Tuple<ulong, ulong>(srvId, channelId);
+             else
+                 return null;
+         }*/
 
-        private async void Set(String key, String value)
+        private async void Set(string key, string value)
         {
             await using var repo = factory.Create();
-            await repo.Settings.SetValue(key,value);
+            await repo.Settings.SetValue(key, value);
             await repo.CommitAsync();
         }
     }
