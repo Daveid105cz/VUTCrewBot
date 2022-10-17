@@ -1,10 +1,13 @@
 ﻿using DSharpPlus.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VUTCrewBot.DAL;
 using VUTCrewBot.Repository;
 
 namespace VUTCrewBot.Commands
@@ -14,11 +17,15 @@ namespace VUTCrewBot.Commands
         public ILogger Logger { private get; set; }
         public CrewBot Bot { private get; set; }
         public BotSettings Settings { get; set; }
-        public InitCommands(ILogger logger, CrewBot bot, BotSettings settings) 
+        public BotConfiguration Configuration { get; set; }
+        private IServiceProvider serviceProvider;
+        public InitCommands(ILogger logger, CrewBot bot, BotSettings settings, BotConfiguration cofig, IServiceProvider provider) 
         {
             Settings = settings;
             Bot = bot;
             Logger = logger;
+            Configuration = cofig;
+            serviceProvider = provider;
         }
         public void Init()
         {
@@ -53,6 +60,44 @@ namespace VUTCrewBot.Commands
                     {
                         Settings.MeetsNotifyChannel = new ChannelId(e.Message.Channel.Guild.Id, e.Message.Channel.Id);
                         await e.Message.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":thumbsup:"));
+                    }
+                    else
+                    {
+                        await e.Message.RespondAsync("Not dávid");
+                    }
+                }
+                else if (e.Message.Content == "?dbdump")
+                {
+                    if (e.Author.Id == 401020216655740929u || e.Author.Id == 630039282886901811u)
+                    {
+                        //String dbpath = Configuration.DbConnectionString.Split("=")[1];
+                        IBotDbContextFactory fact = serviceProvider.GetService<IBotDbContextFactory>();
+                        var dbcx = await fact.CreateDbContextAsync();
+                        try
+                        {
+                            String dbPath = "lastDbBackup.db";
+                            File.Delete(dbPath);
+
+                            await dbcx.Database.ExecuteSqlRawAsync($"VACUUM INTO '{dbPath}'");
+
+                            using (var fs = new FileStream(dbPath, FileMode.Open, FileAccess.Read))
+                            {
+                                var msg = await new DiscordMessageBuilder()
+                                    .WithContent("DB dump here")
+                                    .WithFiles(new Dictionary<string, Stream>() { { "dbdump.db", fs } })
+                                    .SendAsync(e.Message.Channel);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw ex;
+                        }
+                        finally
+                        {
+                            dbcx.Dispose();
+                        }
+
                     }
                     else
                     {

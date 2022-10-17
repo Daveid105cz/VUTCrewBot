@@ -23,10 +23,10 @@ namespace VUTCrewBot
         InitCommands initCommands;
 
         public CrewBot(DiscordClient discordClient, ILoggerFactory loggerFactory, 
-            IServiceProvider provider, BotSettings settings):base(discordClient, loggerFactory,provider)
+            IServiceProvider provider, BotSettings settings, BotConfiguration config):base(discordClient, loggerFactory,provider)
         {
             Settings = settings;
-            initCommands = new InitCommands(Logger, this, Settings);
+            initCommands = new InitCommands(Logger, this, Settings, config, provider);
             MeetTemplatesChoiceProvider.services = provider;
             ActiveMeetChoiceProvider.services = provider;
         }

@@ -70,7 +70,7 @@ namespace VUTCrewBot.Repository
         {
             var meets = await Context.MeetTemplates
                 .Include(x => x.Users)
-                .Where(x => x.RepeatDay == day)
+                .Where(x => x.RepeatDay == day && x.DoGenerate)
                 .ToListAsync();
             return new List<MeetTemplateModelDetail>(meets.Select(x => (MeetTemplateModelDetail)x));
         }
