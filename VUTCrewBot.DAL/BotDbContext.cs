@@ -16,6 +16,9 @@ namespace VUTCrewBot.DAL
         public DbSet<MeetEntity> Meets { get; set; }
         public DbSet<UserMeetResponse> Responses { get; set; }
         public DbSet<MeetTemplateEntity> MeetTemplates { get; set; }
+        public DbSet<ReminderEntity> Reminders { get; set; }
+
+
         public BotDbContext(DbContextOptions contextOptions) : base(contextOptions) { }
 
         public override void Dispose()
