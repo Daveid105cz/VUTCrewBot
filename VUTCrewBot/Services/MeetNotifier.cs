@@ -297,7 +297,7 @@ namespace VUTCrewBot.Services
         public void SetNewTime(DateTime newMeetTime)
         {
             MeetupTime = newMeetTime;
-            logger.LogInformation("Reseting ScheduledObject for " + MeetId);
+            logger.LogInformation("Reseting ScheduledMeetObject for " + MeetId);
         }
     }
 }

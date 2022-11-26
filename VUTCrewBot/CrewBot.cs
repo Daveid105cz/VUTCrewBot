@@ -12,6 +12,7 @@ using VUTCrewBot.Repository;
 using DSharpPlus.SlashCommands;
 using VUTCrewBot.Commands;
 using VUTCrewBot.Services;
+using VUTCrewBot.Services.Reminders;
 
 namespace VUTCrewBot
 {
@@ -54,6 +55,7 @@ namespace VUTCrewBot
 
             //Scheduled jobs
             RegisterJob<MeetRemindJob>("MeetReminding", "0 * * * *");
+            RegisterJob<ReminderShowJob>("ReminderReminding", "0 * * * *");
             RegisterJob<TemplateGenerationJob>("TemplateGenerator", "0 23 * * *");
 
             await Connect();
