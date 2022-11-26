@@ -11,7 +11,7 @@ using VUTCrewBot.DAL;
 namespace VUTCrewBot.DAL.Migrations
 {
     [DbContext(typeof(BotDbContext))]
-    [Migration("20221125222827_Reminders")]
+    [Migration("20221126013140_Reminders")]
     partial class Reminders
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,9 @@ namespace VUTCrewBot.DAL.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ChannelId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("RemindText")

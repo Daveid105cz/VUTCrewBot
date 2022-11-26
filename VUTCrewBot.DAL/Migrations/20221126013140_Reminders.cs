@@ -16,6 +16,7 @@ namespace VUTCrewBot.DAL.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<ulong>(type: "INTEGER", nullable: false),
+                    ChannelId = table.Column<ulong>(type: "INTEGER", nullable: false),
                     RemindText = table.Column<string>(type: "TEXT", nullable: false),
                     RemindTime = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },

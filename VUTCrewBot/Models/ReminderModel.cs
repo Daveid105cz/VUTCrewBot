@@ -21,7 +21,8 @@ namespace VUTCrewBot.Models
 
         public String Text { get => Entity.RemindText; set => Entity.RemindText = value; }
         public DateTime RemindTime { get => Entity.RemindTime; set => Entity.RemindTime = value; }
-        public ulong User { get => Entity.UserId; set => Entity.UserId = value; }   
+        public ulong User { get => Entity.UserId; set => Entity.UserId = value; }
+        public ulong Channel { get => Entity.ChannelId; set => Entity.ChannelId = value; }
 
         public static implicit operator ReminderModel(ReminderEntity entity)
             => new(entity);

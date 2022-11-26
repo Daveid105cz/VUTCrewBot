@@ -100,6 +100,9 @@ namespace VUTCrewBot.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("RemindText")
                         .IsRequired()
                         .HasColumnType("TEXT");

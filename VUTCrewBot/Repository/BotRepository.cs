@@ -20,7 +20,9 @@ namespace VUTCrewBot.Repository
 
         public IMeetRepository Meet => GetOrCreateRepository<MeetRepository>();
         public IMeetTemplateRepository Templates => GetOrCreateRepository<MeetTemplateRepository>();
+        public IReminderRepository Reminders => GetOrCreateRepository<ReminderRepository>();
         public ISettingsRepository Settings => GetOrCreateRepository<SettingsRepository>();
+
 
     }
 

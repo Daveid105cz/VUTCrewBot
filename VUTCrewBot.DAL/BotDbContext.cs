@@ -61,6 +61,18 @@ namespace VUTCrewBot.DAL
                 .HasConversion(ulongConv)
                 .ValueGeneratedNever();
 
+
+            modelBuilder
+                .Entity<ReminderEntity>()
+                .Property(e => e.UserId)
+                .HasConversion(ulongConv)
+                .ValueGeneratedNever();
+
+            modelBuilder
+                .Entity<ReminderEntity>()
+                .Property(e => e.ChannelId)
+                .HasConversion(ulongConv)
+                .ValueGeneratedNever();
             //modelBuilder
             //    .Entity<ChannelEntity>()
             //    .Property(e => e.Id)

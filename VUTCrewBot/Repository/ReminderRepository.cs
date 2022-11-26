@@ -20,9 +20,9 @@ namespace VUTCrewBot.Repository
         public Task<bool> DeleteReminderById(int id);
         public Task<List<ReminderModel>> GetNearestReminders(TimeSpan? timeToMeetingMax = null);
     }
-    public class ReminderReppository : RepositoryBase, IReminderRepository
+    public class ReminderRepository : RepositoryBase, IReminderRepository
     {
-        public ReminderReppository(BotDbContext context) : base(context)
+        public ReminderRepository(BotDbContext context) : base(context)
         {
 
         }
