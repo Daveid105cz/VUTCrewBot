@@ -29,6 +29,7 @@ namespace VUTCrewBot
             initCommands = new InitCommands(Logger, this, Settings, provider);
             MeetTemplatesChoiceProvider.services = provider;
             ActiveMeetChoiceProvider.services = provider;
+            ActiveReminderChoiceProvider.services = provider;
         }
         public void DisposeBot()
         {
@@ -48,10 +49,13 @@ namespace VUTCrewBot
             RegisterService<MeetService>();
             RegisterService<TemplateService>();
             RegisterService<MeetNotifier>();
+            RegisterService<RemindService>();
+            RegisterService<RemindNotifier>();
 
             //Commands
             RegisterCommand<MeetCommands>();
             RegisterCommand<MeetTemplateCommands>();
+            RegisterCommand<ReminderCommands>();
 
             //Scheduled jobs
             RegisterJob<MeetRemindJob>("MeetReminding", "0 * * * *");

@@ -17,7 +17,7 @@ namespace VUTCrewBot.Services.Reminders
         }
         public async Task RunAsync()
         {
-            //await Notifier.
+            await Notifier.RetrieveAndScheduleNearest();
         }
     }
 }

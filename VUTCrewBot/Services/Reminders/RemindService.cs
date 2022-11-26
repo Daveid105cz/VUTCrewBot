@@ -12,7 +12,7 @@ namespace VUTCrewBot.Services.Reminders
 {
     public class RemindService : BotService
     {
-        public RemindService(ILogger logger, ServiceContext sc) : base(logger, sc)
+        public RemindService(ILogger<RemindService> logger, ServiceContext sc) : base(logger, sc)
         {
         }
 

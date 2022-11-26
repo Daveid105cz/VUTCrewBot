@@ -1,5 +1,7 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using VUTCrewBot.Models;
 
@@ -128,7 +130,10 @@ namespace VUTCrewBot.Services.Reminders
                 Logger.LogError($"User with id {detail.User} not found. Cannot send reminder!");
                 return;
             }
-            await channelToSend.SendMessageAsync($"Pingy pongy, hele hele {user.Mention}.\nPřípomínka:\n{detail.Text}");
+            await channelToSend.SendMessageAsync(
+                $"{Formatter.Italic("Pingy pongy, hele hele")} {user.Mention}.\n" +
+                $"{Formatter.Italic("Přípomínka:")}\n" +
+                $"{Formatter.Bold(detail.Text)}");
         }
     }
     internal class ScheduledReminderObject
